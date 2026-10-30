@@ -74,7 +74,7 @@ export default function Login() {
         </form>
 
         <p className="text-gray-400 mt-8">
-          New to Netflix?{' '}
+          New to VSP?{' '}
           <Link to="/signup" className="text-white hover:underline">
             Sign up now.
           </Link>

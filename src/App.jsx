@@ -1,16 +1,17 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from './redux/auth/authSlice'; // Import the logout action
+import { logout } from './redux/auth/authSlice'; 
 
 import Home from './pages/home/Home';
 import AddMovie from './pages/content/AddMovie';
+import EditMovie from './pages/content/EditMovie';
 import WatchMovie from './pages/stream/WatchMovie';
 import Login from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
-import ProtectedRoute from './components/ProtectedRoute'; // Import our new gatekeeper
+import Profile from './components/Profile'; 
+import ProtectedRoute from './components/ProtectedRoute'; 
 
 function App() {
-  // Read auth state directly from Redux
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -26,24 +27,32 @@ function App() {
             <Link to="/" className="text-2xl font-extrabold text-red-600 tracking-wider">
               VSP
             </Link>
+            {isAuthenticated && (
             <div className="hidden md:flex gap-6">
               <Link to="/" className="text-gray-300 hover:text-white font-semibold transition-colors">
                 Browse
               </Link>
-              {/* Updated: Only show Upload if authenticated AND the user is an Admin */}
-              {isAuthenticated && user?.role === 'ROLE_ADMIN' && (
+              {user?.role === 'ROLE_ADMIN' && (
                 <Link to="/add-movie" className="text-gray-300 hover:text-white font-semibold transition-colors">
                   Upload
                 </Link>
               )}
             </div>
+            )}
           </div>
           
-          {/* Dynamic Auth Buttons */}
           <div>
-            {isAuthenticated ? (
-              <div className="flex items-center gap-4">
+            {isAuthenticated && (
+              <div className="flex items-center gap-6">
+                {/* Greeting */}
                 <span className="text-gray-300 text-sm hidden sm:block">Hello, {user?.name}</span>
+                
+                {/* NEW: Profile Link */}
+                <Link to="/profile" className="text-gray-300 hover:text-white font-semibold transition-colors">
+                  Profile
+                </Link>
+
+                {/* Logout Button */}
                 <button 
                   onClick={handleLogout}
                   className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded font-semibold transition-colors border border-gray-700"
@@ -51,23 +60,16 @@ function App() {
                   Logout
                 </button>
               </div>
-            ) : (
-              <Link to="/login" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold transition-colors">
-                Sign In
-              </Link>
-            )}
+             )}
           </div>
         </div>
       </nav>
 
-      {/* Route Configuration */}
       <main>
         <Routes>
-          {/* Public Auth Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
 
-          {/* Standard Protected Routes - Any logged in user */}
           <Route 
             path="/" 
             element={
@@ -86,7 +88,16 @@ function App() {
             } 
           />
 
-          {/* Admin Protected Route - Only ROLE_ADMIN users */}
+          {/* NEW: Profile Protected Route */}
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } 
+          />
+
           <Route 
             path="/add-movie" 
             element={
@@ -95,8 +106,16 @@ function App() {
               </ProtectedRoute>
             } 
           />
+
+          <Route
+            path="/edit-movie/:movieId"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <EditMovie />
+              </ProtectedRoute>
+            }
+          />
           
-          {/* Fallback for 404 Not Found */}
           <Route path="*" element={
             <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center text-white">
               <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>

@@ -29,5 +29,17 @@ export const movieService = {
   createMovieRecord: async (movieData) => {
     const response = await axiosInstance.post('/movies', movieData);
     return response.data;
+  },
+
+  // PATCH /api/v1/movie (Enforced ROLE_ADMIN at Gateway)
+  updateMovie: async (movieUpdate) => {
+    const response = await axiosInstance.patch('/movies', movieUpdate);
+    return response.data;
+  },
+
+  // DELETE /api/v1/movies/{movieId} (Enforced ROLE_ADMIN at Gateway)
+  deleteMovie: async (movieId) => {
+    const response = await axiosInstance.delete(`/movies/${movieId}`);
+    return response.data;
   }
 };

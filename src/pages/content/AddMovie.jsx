@@ -65,7 +65,7 @@ export default function AddMovie() {
       }
 
       // 3. Step 2: Upload Video to Video Service
-      setStatusMessage({ type: 'loading', text: `Step 2/2: Uploading media for ID ${createdMovieId}. Please keep page open.` });
+      setStatusMessage({ type: 'loading', text: `Step 2/2: Uploading media... Please keep page open.` });
       await videoService.uploadVideo(
         createdMovieId, 
         videoFile, 
@@ -75,10 +75,11 @@ export default function AddMovie() {
         }
       );
 
-      setStatusMessage({ type: 'success', text: '✅ Upload complete! Kafka encoding started.' });
+      // CHANGE HERE: Make the message explicit about the background process
+      setStatusMessage({ type: 'success', text: '✅ Upload complete! The video is now processing in the background. It will appear on the Home screen shortly.' });
       
       // Redirect to Home after success
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => navigate('/'), 3000);
 
     } catch (error) {
       console.error("Submission error:", error);

@@ -63,7 +63,33 @@ const authSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
-    }
+    },
+    updateUserDetails: (state, action) => {
+            if (state.user) {
+                // 1. Update the user state
+                state.user = {
+                    ...state.user,
+                    name: action.payload.name,
+                    email: action.payload.email
+                };
+                
+                // 2. Overwrite the old JWT with the fresh one!
+                if (action.payload.token) {
+                    state.token = action.payload.token;
+                    localStorage.setItem('token', action.payload.token);
+                }
+
+                // 3. (Optional) If you also store the raw user object in localStorage
+                const storedUser = JSON.parse(localStorage.getItem('user'));
+                if (storedUser) {
+                    localStorage.setItem('user', JSON.stringify({
+                        ...storedUser,
+                        name: action.payload.name,
+                        email: action.payload.email
+                    }));
+                }
+            }
+        },
   },
   extraReducers: (builder) => {
     builder
@@ -96,5 +122,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearError } = authSlice.actions;
+export const { logout, clearError , updateUserDetails} = authSlice.actions;
 export default authSlice.reducer;
