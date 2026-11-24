@@ -37,6 +37,12 @@ export default function Login() {
       <div className="max-w-md w-full bg-gray-900 p-8 rounded-lg shadow-2xl border border-gray-800">
         <h2 className="text-3xl font-bold text-white mb-6">Sign In</h2>
         
+        {location.state?.message && (
+          <div className="bg-green-500/10 border border-green-500 text-green-400 p-3 rounded mb-4 text-sm">
+            {location.state.message}
+          </div>
+        )}
+
         {error && (
           <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded mb-4 text-sm">
             {error}
@@ -63,6 +69,14 @@ export default function Login() {
               className="w-full bg-gray-800 text-white rounded p-4 focus:outline-none focus:ring-2 focus:ring-red-600"
               required
             />
+            <div className="text-right mt-2">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-gray-400 hover:text-white hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
           </div>
           <button
             type="submit"

@@ -10,6 +10,7 @@ import Login from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
 import Profile from './components/Profile'; 
 import ProtectedRoute from './components/ProtectedRoute'; 
+import ForgotPassword from './components/ForgotPassword';
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -69,6 +70,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route 
             path="/" 
