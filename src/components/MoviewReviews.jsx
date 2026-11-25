@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+    import axiosInstance from '../api/axiosInstance.js'; // <-- Adjust path to your file
 
 const ratingEnumToNumber = {
     'ONE': 1,
@@ -21,7 +21,8 @@ export default function MovieReviews({ movieId, currentUser }) {
 
     const fetchReviews = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/review/movie/${movieId}`);
+            // baseURL + '/review/movie/...' and Authorization header are added automatically
+            const response = await axiosInstance.get(`/review/movie/${movieId}`);
             setReviews(response.data);
         } catch (error) {
             console.error("Failed to fetch reviews", error);
@@ -32,18 +33,14 @@ export default function MovieReviews({ movieId, currentUser }) {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post(
-                'http://localhost:8080/api/v1/review', 
-                { 
-                    movieId: movieId, 
-                    comment: comment, 
-                    rating: rating, 
-                    reviewerId: currentUser.id,
-                    reviewerName: currentUser.name
-                },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            // No need to manually read localStorage or set headers
+            const response = await axiosInstance.post('/review', { 
+                movieId: movieId, 
+                comment: comment, 
+                rating: rating, 
+                reviewerId: currentUser.id,
+                reviewerName: currentUser.name
+            });
             
             setReviews([response.data, ...reviews]);
             setComment('');
@@ -59,10 +56,8 @@ export default function MovieReviews({ movieId, currentUser }) {
         if (!window.confirm("Are you sure you want to delete this review?")) return;
         
         try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:8080/api/v1/review/${reviewId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            // Interceptor handles the Authorization header here too
+            await axiosInstance.delete(`/review/${reviewId}`);
             
             setReviews(reviews.filter(review => review.id !== reviewId));
         } catch (error) {
